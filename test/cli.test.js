@@ -120,7 +120,7 @@ test('scripts with no extension', async () => {
 test('require() is working from stdin', async () => {
   let out =
     await $`node build/cli.js <<< 'console.log(require("./package.json").name)'`
-  assert.match(out.stdout, 'zx')
+  assert.match(out.stdout, 'zy')
 })
 
 test('require() is working in ESM', async () => {

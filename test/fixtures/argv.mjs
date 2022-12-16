@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'zx/globals'
-import { argv as importedArgv } from 'zx'
+import 'zy/globals'
+import { argv as importedArgv } from 'zy'
 console.log('global', JSON.stringify(argv))
 console.log('imported', JSON.stringify(importedArgv))

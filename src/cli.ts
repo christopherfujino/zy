@@ -20,7 +20,7 @@ import { createRequire } from 'node:module'
 import { basename, dirname, extname, join, resolve } from 'node:path'
 import url from 'node:url'
 import { updateArgv } from './goods.js'
-import { $, chalk, fetch, ProcessOutput } from './index.js'
+import { $, fetch, ProcessOutput } from './index.js'
 import { startRepl } from './repl.js'
 import { randomId } from './util.js'
 import { installDeps, parseDeps } from './deps.js'
@@ -28,17 +28,17 @@ import { installDeps, parseDeps } from './deps.js'
 function printUsage() {
   // language=txt
   console.log(`
- ${chalk.bold('zx ' + getVersion())}
+ zx ${getVersion()}
    A tool for writing better scripts
 
- ${chalk.bold('Usage')}
+ Usage
    zx [options] <script>
 
- ${chalk.bold('Options')}
+ Options
    --quiet              don't echo commands
    --shell=<path>       custom shell binary
    --prefix=<command>   prefix all commands
-   --eval=<js>, -e      evaluate script 
+   --eval=<js>, -e      evaluate script
    --install, -i        install dependencies
    --experimental       enable experimental features
    --version, -v        print current zx version

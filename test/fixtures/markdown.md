@@ -13,11 +13,7 @@ await $`echo ${__dirname}`
 ```
 
 ```js
-console.log(chalk.yellowBright(__filename))
-```
-
-```js
-await import('chalk')
+console.log(__filename)
 ```
 
 ```bash

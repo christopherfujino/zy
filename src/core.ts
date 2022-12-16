@@ -18,7 +18,6 @@ import { AsyncLocalStorage, createHook } from 'node:async_hooks'
 import { Readable, Writable } from 'node:stream'
 import { inspect } from 'node:util'
 import { RequestInfo, RequestInit } from 'node-fetch'
-import chalk, { ChalkInstance } from 'chalk'
 import which from 'which'
 import {
   Duration,
@@ -418,15 +417,15 @@ export class ProcessOutput extends Error {
   }
 
   [inspect.custom]() {
-    let stringify = (s: string, c: ChalkInstance) =>
-      s.length === 0 ? "''" : c(inspect(s))
+    let stringify = (s: string) =>
+      s.length === 0 ? "''" : inspect(s)
     return `ProcessOutput {
-  stdout: ${stringify(this.stdout, chalk.green)},
-  stderr: ${stringify(this.stderr, chalk.red)},
+  stdout: ${stringify(this.stdout)},
+  stderr: ${stringify(this.stderr)},
   signal: ${inspect(this.signal)},
-  exitCode: ${(this.exitCode === 0 ? chalk.green : chalk.red)(this.exitCode)}${
+  exitCode: ${this.exitCode}${
       exitCodeInfo(this.exitCode)
-        ? chalk.grey(' (' + exitCodeInfo(this.exitCode) + ')')
+        ? ' (' + exitCodeInfo(this.exitCode) + ')'
         : ''
     }
 }`
@@ -489,13 +488,13 @@ export function log(entry: LogEntry) {
       break
     case 'cd':
       if (!$.verbose) return
-      process.stderr.write('$ ' + chalk.greenBright('cd') + ` ${entry.dir}\n`)
+      process.stderr.write('$ cd' + ` ${entry.dir}\n`)
       break
     case 'fetch':
       if (!$.verbose) return
       const init = entry.init ? ' ' + inspect(entry.init) : ''
       process.stderr.write(
-        '$ ' + chalk.greenBright('fetch') + ` ${entry.url}${init}\n`
+        '$ fetch' + ` ${entry.url}${init}\n`
       )
       break
     case 'retry':

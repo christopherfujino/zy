@@ -28,7 +28,6 @@ export {
 
 export {
   argv,
-  chalk,
   echo,
   fetch,
   fs,
