@@ -1,7 +1,9 @@
-# 🐚 zx
+# 🐚 zy
+
+A fork of google/zx with less dependencies.
 
 ```js
-#!/usr/bin/env zx
+#!/usr/bin/env zy
 
 await $`cat package.json | grep name`
 
@@ -21,14 +23,18 @@ await $`mkdir /tmp/${name}`
 Bash is great, but when it comes to writing more complex scripts,
 many people prefer a more convenient programming language.
 JavaScript is a perfect choice, but the Node.js standard library
-requires additional hassle before using. The `zx` package provides
+requires additional hassle before using. The `zy` package provides
 useful wrappers around `child_process`, escapes arguments and
 gives sensible defaults.
 
 ## Install
 
 ```bash
-npm i -g zx
+git clone https://github.com/christopherfujino/zy
+cd zy
+npm install
+npm link # this will create a symlink to your global node_modules
+echo 'await $`uname -a` | zy'
 ```
 
 **Requirement**: Node version >= 16.0.0
@@ -36,7 +42,7 @@ npm i -g zx
 ## Goods
 
 [$](#command-) · [cd()](#cd) · [fetch()](#fetch) · [question()](#question) · [sleep()](#sleep) · [echo()](#echo) · [stdin()](#stdin) · [within()](#within) ·
-[chalk](#chalk-package) · [fs](#fs-package) · [os](#os-package) · [path](#path-package) · [glob](#globby-package) · [yaml](#yaml-package) · [minimist](#minimist-package) · [which](#which-package) ·
+[fs](#fs-package) · [os](#os-package) · [path](#path-package) · [glob](#globby-package) · [yaml](#yaml-package) · [minimist](#minimist-package) · [which](#which-package) ·
 [__filename](#__filename--__dirname) · [__dirname](#__filename--__dirname) · [require()](#require)
 
 ## Documentation
@@ -45,9 +51,9 @@ Write your scripts in a file with an `.mjs` extension in order to
 use `await` at the top level. If you prefer the `.js` extension,
 wrap your scripts in something like `void async function () {...}()`.
 
-Add the following shebang to the beginning of your `zx` scripts:
+Add the following shebang to the beginning of your `zy` scripts:
 ```bash
-#!/usr/bin/env zx
+#!/usr/bin/env zy
 ```
 
 Now you will be able to run your script like so:
@@ -56,10 +62,10 @@ chmod +x ./script.mjs
 ./script.mjs
 ```
 
-Or via the `zx` executable:
+Or via the `zy` executable:
 
 ```bash
-zx ./script.mjs
+zy ./script.mjs
 ```
 
 All functions (`$`, `cd`, `fetch`, etc) are available straight away
@@ -68,7 +74,7 @@ without any imports.
 Or import globals explicitly (for better autocomplete in VS Code).
 
 ```js
-import 'zx/globals'
+import 'zy/globals'
 ```
 
 ### ``$`command` ``
@@ -140,7 +146,7 @@ class ProcessOutput {
 
 The output of the process is captured as-is. Usually, programs print a new line `\n` at the end.
 If `ProcessOutput` is used as an argument to some other `$` process,
-**zx** will use stdout and trim the new line.
+**zy** will use stdout and trim the new line.
 
 ```js
 let date = await $`date`
@@ -232,14 +238,6 @@ let version = await within(async () => {
 
 The following packages are available without importing inside scripts.
 
-### `chalk` package
-
-The [chalk](https://www.npmjs.com/package/chalk) package.
-
-```js
-console.log(chalk.blue('Hello world!'))
-```
-
 ### `fs` package
 
 The [fs-extra](https://www.npmjs.com/package/fs-extra) package.
@@ -330,7 +328,7 @@ command substitution.
 
 Specifies verbosity. Default is `true`.
 
-In verbose mode, `zx` prints all executed commands alongside with their
+In verbose mode, `zy` prints all executed commands alongside with their
 outputs.
 
 Or use the CLI argument `--quiet` to set `$.verbose = false`.
@@ -353,7 +351,7 @@ all `$` processes use `process.cwd()` by default (same as `spawn` behavior).
 Specifies a [logging function](src/core.ts).
 
 ```ts
-import { LogEntry, log } from 'zx/core'
+import { LogEntry, log } from 'zy/core'
 
 $.log = (entry: LogEntry) => {
   switch (entry.kind) {
@@ -373,14 +371,14 @@ $.log = (entry: LogEntry) => {
 
 In [ESM](https://nodejs.org/api/esm.html) modules, Node.js does not provide
 `__filename` and `__dirname` globals. As such globals are really handy in scripts,
-`zx` provides these for use in `.mjs` files (when using the `zx` executable).
+`zy` provides these for use in `.mjs` files (when using the `zy` executable).
 
 ### `require()`
 
 In [ESM](https://nodejs.org/api/modules.html#modules_module_createrequire_filename)
 modules, the `require()` function is not defined.
-The `zx` provides `require()` function, so it can be used with imports in `.mjs`
-files (when using `zx` executable).
+The `zy` provides `require()` function, so it can be used with imports in `.mjs`
+files (when using `zy` executable).
 
 ```js
 let {version} = require('./package.json')
@@ -388,8 +386,8 @@ let {version} = require('./package.json')
 
 ## Experimental
 
-The zx provides a few experimental functions. Please leave feedback about
-those features in [the discussion](https://github.com/google/zx/discussions/299).
+The zy provides a few experimental functions. Please leave feedback about
+those features in [the discussion](https://github.com/google/zy/discussions/299).
 To enable new features via CLI pass `--experimental` flag.
 
 ### `retry()`
@@ -398,7 +396,7 @@ Retries a callback for a few times. Will return after the first
 successful attempt, or will throw after specifies attempts count.
 
 ```js
-import { retry, expBackoff } from 'zx/experimental'
+import { retry, expBackoff } from 'zy/experimental'
 
 let p = await retry(10, () => $`curl https://medv.io`)
 
@@ -414,7 +412,7 @@ let p = await retry(30, expBackoff(), () => $`curl https://medv.io`)
 Starts a simple CLI spinner.
 
 ```js
-import { spinner } from 'zx/experimental'
+import { spinner } from 'zy/experimental'
 
 await spinner(() => $`long-running command`)
 
@@ -448,30 +446,30 @@ It is possible to make use of `$` and other functions via explicit imports:
 
 ```js
 #!/usr/bin/env node
-import {$} from 'zx'
+import {$} from 'zy'
 await $`date`
 ```
 
 ### Scripts without extensions
 
-If script does not have a file extension (like `.git/hooks/pre-commit`), zx
+If script does not have a file extension (like `.git/hooks/pre-commit`), zy
 assumes that it is an [ESM](https://nodejs.org/api/modules.html#modules_module_createrequire_filename)
 module.
 
 ### Markdown scripts
 
-The `zx` can execute [scripts written as markdown](docs/markdown.md):
+The `zy` can execute [scripts written as markdown](docs/markdown.md):
 
 ```bash
-zx docs/markdown.md
+zy docs/markdown.md
 ```
 
 ### TypeScript scripts
 
 ```ts
-import {$} from 'zx'
+import {$} from 'zy'
 // Or
-import 'zx/globals'
+import 'zy/globals'
 
 void async function () {
   await $`ls -la`
@@ -484,19 +482,19 @@ in **tsconfig.json**.
 
 ### Executing remote scripts
 
-If the argument to the `zx` executable starts with `https://`, the file will be
+If the argument to the `zy` executable starts with `https://`, the file will be
 downloaded and executed.
 
 ```bash
-zx https://medv.io/game-of-life.js
+zy https://medv.io/game-of-life.js
 ```
 
 ### Executing scripts from stdin
 
-The `zx` supports executing scripts from stdin.
+The `zy` supports executing scripts from stdin.
 
 ```js
-zx <<'EOF'
+zy <<'EOF'
 await $`pwd`
 EOF
 ```
@@ -506,7 +504,7 @@ EOF
 Evaluate the following argument as a script.
 
 ```bash
-cat package.json | zx --eval 'let v = JSON.parse(await stdin()).version; echo(v)'
+cat package.json | zy --eval 'let v = JSON.parse(await stdin()).version; echo(v)'
 ```
 
 ### Installing dependencies via --install
@@ -517,11 +515,11 @@ import sh from 'tinysh'
 sh.say('Hello, world!')
 ```
 
-Add `--install` flag to the `zx` command to install missing dependencies 
+Add `--install` flag to the `zy` command to install missing dependencies 
 automatically.
 
 ```bash
-zx --install script.mjs
+zy --install script.mjs
 ```
 
 You can also specify needed version by adding comment with `@` after 
@@ -557,16 +555,9 @@ jobs:
       env:
         FORCE_COLOR: 3
       run: |
-        npx zx <<'EOF'
+        npx zy <<'EOF'
         await $`...`
         EOF
-```
-
-### Canary / Beta / RC builds
-Impatient early adopters can try the experimental zx versions. But keep in mind: these builds are ⚠️️ __unstable__ in every sense.
-```bash
-npm i zx@dev
-npx zx@dev --install --quiet <<< 'import _ from "lodash" /* 4.17.15 */; console.log(_.VERSION)'
 ```
 
 ## License
