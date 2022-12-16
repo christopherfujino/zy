@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import chalk from 'chalk'
 import { suite } from 'uvu'
 import * as assert from 'uvu/assert'
 import { inspect } from 'node:util'
@@ -127,7 +126,7 @@ test('pipes are working', async () => {
 test('ProcessPromise', async () => {
   let contents = ''
   let stream = new Writable({
-    write: function (chunk, encoding, next) {
+    write: function (chunk, _encoding, next) {
       contents += chunk.toString()
       next()
     },
@@ -373,7 +372,7 @@ test('$ thrown as error', async () => {
     err = p
   }
   assert.ok(err.exitCode > 0)
-  assert.ok(err.stderr.includes('/bin/bash: wtf: command not found\n'))
+  assert.ok(err.stderr.includes('wtf: command not found\n'))
   assert.ok(err[inspect.custom]().includes('Command not found'))
 })
 
