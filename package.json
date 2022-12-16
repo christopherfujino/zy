@@ -43,7 +43,7 @@
     "fmt:check": "prettier --check .",
     "build": "tsc --project tsconfig.prod.json",
     "build:check": "tsc",
-    "prepare": "tsc --project tsconfig.prod.json",
+    "prepare": "npx tsc --project tsconfig.prod.json",
     "test": "npm run build && PATH=$(env -i bash -c 'echo $PATH') node_modules/.bin/uvu test -i fixtures",
     "test:types": "tsd",
     "coverage": "c8 --check-coverage npm test -- -i package",
